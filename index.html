@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="T-Loss can effectively handle outliers in the data by controlling its sensitivity with a single parameter, 2023">
+  <meta name="keywords" content="T-Loss, Robust segmentation, robust loss, medical image segmentation, noisy labels">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robust T-Loss for Medical Image Segmentation</title>
+
+
+  <!-- HTML Meta Tags -->
+  <meta name="description" content="T-Loss can effectively handle outliers in the data by controlling its sensitivity with a single parameter.">
+
+  <!-- Facebook Meta Tags -->
+  <meta property="og:url" content="https://visual-tactile-synthesis.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Robust T-Loss for Medical Image Segmentation">
+  <meta property="og:description" content="T-Loss can effectively handle outliers in the data by controlling its sensitivity with a single parameter, 2023">
+  <meta property="og:image" content="https://visual-tactile-synthesis.github.io/static/images/teaser.png">
+
+  <!-- Twitter Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:domain" content="visual-tactile-synthesis.github.io">
+  <meta property="twitter:url" content="https://visual-tactile-synthesis.github.io/">
+  <meta name="twitter:title" content="Robust T-Loss for Medical Image Segmentation">
+  <meta name="twitter:description" content="T-Loss can effectively handle outliers in the data by controlling its sensitivity with a single parameter, 2023">
+  <meta name="twitter:image" content="https://visual-tactile-synthesis.github.io/static/images/teaser.png">
+
+  <!-- Meta Tags Generated via https://www.opengraph.xyz -->
+        
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XGXGBVDE78"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-XGXGBVDE78');
+  </script>
+  <link rel="stylesheet" href="./static/css/juxtapose.css">
+  
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icon_1.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <!-- Load plotly.js into the DOM for the clickable events -->
+	<script src='https://cdn.plot.ly/plotly-2.14.0.min.js'></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <!-- <script src="./static/js/clickable.js"></script> -->
+
+  <!-- Load JaxtaposeJS for image slider -->
+  <!-- <script src="https://cdn.knightlab.com/libs/juxtapose/latest/js/juxtapose.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css"> -->
+  
+</head>
+<body>
+
+
+<!-- Title -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Vision Grahp XXXX</h1>
+          <h2 class="title is-3 publication-title">IEEE Trans</h2>
+          
+
+          <!-- authors -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                Jian Lin<sup>1</sup>&nbsp</span>
+              <span class="author-block">
+                XXX</a><sup>2</sup>&nbsp</span>
+              </span>
+              <span class="author-block">
+                XX<sup>1</sup>&nbsp</span>
+              <span class="author-block">
+                XXX<sup>1,2</sup>&nbsp
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup> NWPU
+                &nbsp</span>
+              <span class="author-block"><sup>2</sup>NWPU &nbsp</span>
+            </div>
+
+          <!-- Button for different release formats -->
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- <span class="link-block">
+                <a href="./static/files/Ours.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+              <!-- Arxiv Link. -->
+              <!-- <span class="link-block">
+                <a href="https://arxiv.org/abs/2306.00753"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+                <span class="link-block">
+                  <a href="#bibtex"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-obp"></i>
+                    </span>
+                    <span>BibTex</span>
+                  </a>
+                </span>
+              <!-- Video Link. -->
+              <!-- TODO: change to your own video link, e.g. https://www.youtube.com/watch?v=MrKrnHhk8IA -->
+              <!--
+              <span class="link-block">
+                <a href="https://www.youtube.com"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/Digital-Dermatology"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Teaser video and text -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!-- <video id="teaser" autoplay loop playsinline height="100%" controls muted="false">
+        <source src="./static/videos/website_teaser_video_v5_voiceover.mp4"
+                type="video/mp4">
+      </video> -->
+      <!-- Embed a Youtube video link for faster loading -->
+    </div>
+  </div>
+</section>
+
+<!-- Abstract -->
+  <section class="hero is-light is-small">
+    <div class="hero-body">
+      <div class="container is-max-desktop has-text-centered">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="has-text-justified">
+          <p>
+            Here is Abstract
+          </p>
+          <br>
+        </div>
+    </div>
+    </div>
+  </section>
+   <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+
+
+<!-- Results, slidebar to show noisy image and t-loss prediction -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3 has-text-centered">Experimental</h2>
+        <div class="content has-text-justified">
+          <p>
+          XXX
+          </p>
+
+          <style type="text/css">
+            .tg  {border-collapse:collapse;border-spacing:0;}
+            .tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+              overflow:hidden;padding:10px 5px;word-break:normal;}
+            .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
+              font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+            .tg .tg-kg9c{background-color:#D9D9D9;border-color:inherit;text-align:left;vertical-align:top}
+            .tg .tg-e25k{background-color:#D9D9D9;border-color:#000000;text-align:left;vertical-align:top}
+            .tg .tg-wp8o{border-color:#000000;text-align:center;vertical-align:top}
+            .tg .tg-xwyw{border-color:#000000;text-align:center;vertical-align:middle}
+            .tg .tg-73oq{border-color:#000000;text-align:left;vertical-align:top}
+            .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
+            .tg .tg-0a7q{border-color:#000000;text-align:left;vertical-align:middle}
+            </style>
+            <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-xwyw" colspan="2" rowspan="3">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Mehtod</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-wp8o" colspan="8">&nbsp;&nbsp;&nbsp;<br><span style="color:black">DATASET</span>&nbsp;&nbsp;&nbsp;</th>
+              </tr>
+              <tr>
+                <th class="tg-wp8o" colspan="4">   <br><span style="color:black">Sirst AUG</span> </th>
+                <th class="tg-wp8o" colspan="4">   <br><span style="color:black">IRSTD-1K</span>   </th>
+              </tr>
+              <tr>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Precision</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Recall</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">IoU</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">F1</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Precision</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Recall</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">IoU</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">F1</span>&nbsp;&nbsp;&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-xwyw" rowspan="12">   <br><span style="color:black">Model Drive Method</span>   </td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">TopHat</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.7136</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1825</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.17</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2906</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0719</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2034</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0561</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1062</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">TLLCM</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.8091</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.076</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0747</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.139</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.6898</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.098</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0938</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1716</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">LIG</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.8798</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1587</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1553</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2689</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.3044</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.159</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1166</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2089</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">RLCM</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.698</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1979</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1823</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.3083</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.3731</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2608</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1813</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.307</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">var_diff</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.7235</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0834</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0808</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1495</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.664</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1182</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1115</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2007</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">MSAAGD</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0716</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2136</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0567</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1073</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2061</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2128</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1169</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2094</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">MSLoG</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0179</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.8366</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0179</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0351</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0021</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.7698</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0021</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0041</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">LEF</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.6523</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1777</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1623</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2793</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.6778</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1964</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1796</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.3045</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">PSTNN</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.9441</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1391</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.138</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2425</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.4495</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.204</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1632</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.2806</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">ADDGD</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.8876</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0817</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0809</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1497</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.5659</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0671</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0638</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.12</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">WSLCM</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.8466</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0538</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0533</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1012</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.6095</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0971</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0915</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1676</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">ADMD</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.9343</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1176</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1167</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.209</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.5493</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0936</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.0869</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-0pky">&nbsp;&nbsp;&nbsp;<br><span style="color:black">0.1599</span>&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+              <tr>
+                <td class="tg-0a7q" rowspan="7">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Data Drive Method</span>&nbsp;&nbsp;&nbsp;</td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">ACM</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8205</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7607</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.6521</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7895</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.682</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.722</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.5402</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7014</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+              <tr>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">AGPCNet</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.831</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7718</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.6671</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8003</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.6898</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.6433</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.499</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.6657</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+              <tr>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">DNANet</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8577</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8029</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7085</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8294</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7085</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7228</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:#1F4E79">0.5572</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:#1F4E79">0.7156</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+              <tr>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">UCF</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8772</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7773</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7011</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8243</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.1679</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7775</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.1602</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.2762</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+              <tr>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">Swin</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.686</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8814</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.628</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7715</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.3375</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.3101</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.1927</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.3232</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+              <tr>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">HRNet</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8062</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8551</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:#1F4E79">0.7093</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:#1F4E79">0.8299</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.0715</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.6137</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.0684</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.128</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+              <tr>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">Ours</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8495</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.8627</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:red">0.7483</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:red">0.8561</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7892</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:black">0.7054</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-e25k"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:red">0.5936</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+                <td class="tg-kg9c"><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span><br><span style="color:red">0.745</span><span style="background-color:#D9D9D9">&nbsp;&nbsp;&nbsp;</span></td>
+              </tr>
+            </tbody>
+            </table>
+
+          <h2 class="title is-3 has-text-centered">Visual Results</h2>
+          <p>
+              XXX
+          </p>
+
+          <!-- row 1 -->
+          <div class="columns is-centered">
+           
+            <!-- col 1 -->
+            <div class="column">
+              <div class="content">
+                <div class="tab_container">
+                  <div id="juxtapose-embed1" data-startingposition="50%" data-animate="true" class="juxtapose">
+                    <div class="jx-slider">
+                      <div class="jx-handle " style="left: 54.53%;">
+                        <div class="jx-arrow jx-left"></div>
+                        <div class="jx-control">
+                          <div class="jx-controller" tabindex="0" role="slider" aria-valuenow="50" aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                        <div class="jx-arrow jx-right"></div>
+                      </div>
+                      <div class="jx-image jx-left " style="width: 54.53%;">
+                        <img src="./static/images/noise_results/MDFA/mdfa_17.png" alt="" data-label="GT">
+                      </div>
+                      <div class="jx-image jx-right " style="width: 45.47%;">
+                        <img src="./static/images/noise_results/GNN/gnn_mdfa_17.png" alt="" data-label="Ours">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- col 2 -->
+            <div class="column">
+              <div class="content">
+                <div class="tab_container">
+                  <div id="juxtapose-embed2" data-startingposition="50%" data-animate="true" class="juxtapose">
+                    <div class="jx-slider">
+                      <div class="jx-handle " style="left: 54.53%;">
+                        <div class="jx-arrow jx-left"></div>
+                        <div class="jx-control">
+                          <div class="jx-controller" tabindex="0" role="slider" aria-valuenow="50" aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                        <div class="jx-arrow jx-right"></div>
+                      </div>
+                      <div class="jx-image jx-left " style="width: 54.53%;">
+                        <img src="./static/images/noise_results/MDFA/mdfa_20.png" alt="" data-label="GT">
+                      </div>
+                      <div class="jx-image jx-right " style="width: 45.47%;">
+                        <img src="./static/images/noise_results/GNN/gnn_mdfa_20.png" alt="" data-label="Ours">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- col 3 -->
+            <div class="column">
+              <div class="content">
+                <div class="tab_container">
+                  <div id="juxtapose-embed1" data-startingposition="30%" data-animate="true" class="juxtapose">
+                    <div class="jx-slider">
+                      <div class="jx-handle " style="left: 54.53%;">
+                        <div class="jx-arrow jx-left"></div>
+                        <div class="jx-control">
+                          <div class="jx-controller" tabindex="0" role="slider" aria-valuenow="50" aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                        <div class="jx-arrow jx-right"></div>
+                      </div>
+                      <div class="jx-image jx-left " style="width: 54.53%;">
+                        <img src="./static/images/noise_results/MDFA/mdfa_25.png" alt="" data-label="GT">
+                      </div>
+                      <div class="jx-image jx-right " style="width: 45.47%;">
+                        <img src="./static/images/noise_results/GNN/gnn_mdfa_25.png" alt="" data-label="Ours">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- col 4 -->
+            <div class="column">
+              <div class="content">
+                <div class="tab_container">
+                  <div id="juxtapose-embed2" data-startingposition="50%" data-animate="true" class="juxtapose">
+                    <div class="jx-slider">
+                      <div class="jx-handle " style="left: 54.53%;">
+                        <div class="jx-arrow jx-left"></div>
+                        <div class="jx-control">
+                          <div class="jx-controller" tabindex="0" role="slider" aria-valuenow="50" aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                        <div class="jx-arrow jx-right"></div>
+                      </div>
+                      <div class="jx-image jx-left " style="width: 54.53%;">
+                        <img src="./static/images/noise_results/MDFA/mdfa_36.png" alt="" data-label="GT">
+                      </div>
+                      <div class="jx-image jx-right " style="width: 45.47%;">
+                        <img src="./static/images/noise_results/GNN/gnn_mdfa_36.png" alt="" data-label="Ours">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- col 5 -->
+            <div class="column">
+              <div class="content">
+                <div class="tab_container">
+                  <div id="juxtapose-embed2" data-startingposition="50%" data-animate="true" class="juxtapose">
+                    <div class="jx-slider">
+                      <div class="jx-handle " style="left: 54.53%;">
+                        <div class="jx-arrow jx-left"></div>
+                        <div class="jx-control">
+                          <div class="jx-controller" tabindex="0" role="slider" aria-valuenow="50" aria-valuemin="0"
+                            aria-valuemax="100"></div>
+                        </div>
+                        <div class="jx-arrow jx-right"></div>
+                      </div>
+                      <div class="jx-image jx-left " style="width: 54.53%;">
+                        <img src="./static/images/noise_results/MDFA/mdfa_63.png" alt="" data-label="GT">
+                      </div>
+                      <div class="jx-image jx-right " style="width: 45.47%;">
+                        <img src="./static/images/noise_results/GNN/gnn_mdfa_63.png" alt="" data-label="Ours">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>      
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BibTex -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title" id="bibtex">BibTeX</h2>
+    <pre><code>@incollection{XX,
+  title     = {Graph},
+  author    = {Jian Lin,XX},
+  year      = {2023},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="https://github.com/Digital-Dermatology" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is adapted from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a>.
+            We thank the authors for open-sourcing the source code. 
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+
+<!-- javascript code for customized juxtapose -->
+<script src="./static/js/juxtapose.js"></script>
+<!-- javascript code for clickable events -->
+<script src="./static/js/clickable.js"></script>
+
+
+</html>
