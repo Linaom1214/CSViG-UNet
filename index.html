@@ -218,23 +218,23 @@
               overflow:hidden;padding:10px 5px;word-break:normal;}
             .tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
               font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-            .tg .tg-kg9c{background-color:#D9D9D9;border-color:inherit;text-align:left;vertical-align:top}
-            .tg .tg-e25k{background-color:#D9D9D9;border-color:#000000;text-align:left;vertical-align:top}
+            .tg .tg-kg9c{background-color:#D9D9D9;border-color:inherit;text-align:center;vertical-align:top}
+            .tg .tg-e25k{background-color:#D9D9D9;border-color:#000000;text-align:center;vertical-align:top}
             .tg .tg-wp8o{border-color:#000000;text-align:center;vertical-align:top}
             .tg .tg-xwyw{border-color:#000000;text-align:center;vertical-align:middle}
-            .tg .tg-73oq{border-color:#000000;text-align:left;vertical-align:top}
-            .tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-            .tg .tg-0a7q{border-color:#000000;text-align:left;vertical-align:middle}
+            .tg .tg-73oq{border-color:#000000;text-align:center;vertical-align:top}
+            .tg .tg-0pky{border-color:inherit;text-align:center;vertical-align:top}
+            .tg .tg-0a7q{border-color:#000000;text-align:center;vertical-align:middle}
             </style>
             <table class="tg">
             <thead>
               <tr>
-                <th class="tg-xwyw" colspan="2" rowspan="3">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Mehtod</span>&nbsp;&nbsp;&nbsp;</th>
+                <th class="tg-xwyw" colspan="2" rowspan="3" text-align="center">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Mehtod</span>&nbsp;&nbsp;&nbsp;</th>
                 <th class="tg-wp8o" colspan="8">&nbsp;&nbsp;&nbsp;<br><span style="color:black">DATASET</span>&nbsp;&nbsp;&nbsp;</th>
               </tr>
               <tr>
-                <th class="tg-wp8o" colspan="4">   <br><span style="color:black">Sirst AUG</span> </th>
-                <th class="tg-wp8o" colspan="4">   <br><span style="color:black">IRSTD-1K</span>   </th>
+                <th class="tg-wp8o" colspan="4" text-align="center">   <br><span style="color:black">Sirst AUG</span> </th>
+                <th class="tg-wp8o" colspan="4" text-align="center">   <br><span style="color:black">IRSTD-1K</span>   </th>
               </tr>
               <tr>
                 <th class="tg-73oq">&nbsp;&nbsp;&nbsp;<br><span style="color:black">Precision</span>&nbsp;&nbsp;&nbsp;</th>
@@ -605,6 +605,61 @@
     </div>
   </div>
 </section>
+
+<!-- References and Acknowledgement -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <div class="container is-max-desktop">
+
+           <!-- Code -->
+          <div class="columns is-centered">
+            <div class="column is-full-width">
+              <h2 class="title is-3 has-text-centered">Cycle Shift Graph Pytorch Style Code</h2>
+              <div class="content has-text-justified">
+      <pre><code>
+        class MRConv4d(nn.Module):
+        """
+        Max-Relative Graph Convolution (Paper: https://arxiv.org/abs/1904.03751) for dense data type
+    
+        K is the number of superpatches, therefore hops equals res // K.
+        """
+    
+        def __init__(self, in_channels, out_channels, K=2):
+            super(MRConv4d, self).__init__()
+            self.nn = nn.Sequential(
+                nn.Conv2d(in_channels * 2, out_channels, 1),
+                nn.BatchNorm2d(in_channels * 2),
+                nn.GELU()
+            )
+            self.K = K
+    
+        def forward(self, x):
+            B, C, H, W = x.shape
+            x = torch.roll(x, shifts=(-(self.K // 2), -(self.K // 2)), dims=(2, 3))
+            x_j = torch.zeros_like(x).to(x.device)
+            for i in torch.arange(self.K, H, self.K):
+                x_c = x - torch.roll(x, shifts=(-i, 0), dims=(2, 3))
+                x_j = torch.max(x_j, x_c)
+            for i in torch.arange(self.K, W, self.K):
+                x_r = x - torch.roll(x, shifts=(0, -i), dims=(2, 3))
+                x_j = torch.max(x_j, x_r)
+    
+            x = torch.cat([x, x_j], dim=1)
+            x = torch.roll(x, shifts=(self.K // 2, self.K // 2), dims=(2, 3))
+            return self.nn(x)
+      </code></pre>
+              </div> 
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- BibTex -->
 <section class="section" id="BibTeX">
