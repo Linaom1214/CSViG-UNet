@@ -1,0 +1,15 @@
+torch
+torchvision
+tensorboard
+numpy
+torchsummary
+# scikit-image
+# wandb
+loguru
+#opencv
+timm
+pillow
+# sklearn
+matplotlib
+albumentations
+einops
