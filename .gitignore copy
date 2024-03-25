@@ -1,0 +1,9 @@
+/data/
+/result/
+*.trt
+.idea
+.vscode
+wandb
+*.png
+*.jpg
+____pycache__/*
